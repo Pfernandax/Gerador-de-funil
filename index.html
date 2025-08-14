@@ -1,122 +1,143 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-br" data-theme="light">
 <head>
   <meta charset="UTF-8">
   <title>Gerador de Pipeline de Vendas</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700&display=swap" rel="stylesheet">
   <style>
-    body {
-      background: linear-gradient(135deg,#f2f7fd 0%, #d9e6fb 100%);
-      font-family: 'Montserrat', Arial, sans-serif;
-      min-height: 100vh; margin: 0; padding: 0;
+    :root{
+      --bg-start:#eef4ff; --bg-end:#d8e6ff;
+      --brand:#3556a8; --brand-2:#22b8a7; --accent:#4fbeff; --accent-2:#6be3c0;
+      --ink:#1b2b45; --ink-soft:#3b5a86; --card:#ffffffcc; --stroke:#e3eefa;
+      --shadow:0 8px 36px #7796cc15, 0 1.5px 4px #b6d0f89e;
     }
-    .main-title {
-      text-align: center; font-size: 2.1rem; font-weight: 800; color: #38548b; margin-top: 38px; letter-spacing: -1px; margin-bottom: 0px; text-shadow: 0 3px 15px #d3e5fd;
+    [data-theme="dark"]{
+      --bg-start:#0b1220; --bg-end:#0f1b33;
+      --brand:#9ec1ff; --brand-2:#66e6d8; --accent:#7ab5ff; --accent-2:#7ff0cf;
+      --ink:#e8f0ff; --ink-soft:#c8d6ff; --card:#0f1a33cc; --stroke:#1f2c4a;
+      --shadow:0 8px 36px #00000055, 0 1.5px 4px #00000077;
     }
-    .center-outer {
-      min-height: 75vh;
-      display: flex; align-items: center; justify-content: center;
-    }
-    .form-card-anim-wrapper {
-      width: 430px; min-width: 280px; max-width: 98vw;
-      overflow: visible;
-      position: relative;
-      margin-top: 0;
-      min-height: 320px;
-    }
-    .form-card {
-      background: #fff;
-      width: 100%;
-      padding: 42px 34px 38px 34px;
-      border-radius: 30px;
-      box-shadow: 0 8px 36px #7796cc15, 0 1.5px 4px #b6d0f89e;
-      transition: box-shadow .18s;
-      position: absolute;
-      left: 0; top: 0;
-      animation: fadeIn .45s;
-      min-width: 280px;
-    }
+
+    *{box-sizing:border-box}
+    body { background: radial-gradient(1100px 700px at 10% -10%, var(--bg-end), transparent 60%), radial-gradient(1000px 700px at 110% 10%, var(--bg-end), transparent 60%), linear-gradient(135deg,var(--bg-start) 0%, var(--bg-end) 100%); font-family:'Montserrat', Arial, sans-serif; min-height:100vh; margin:0; padding:0; color:var(--ink);}
+
+    /* Top Bar */
+    .topbar{ display:flex; align-items:center; justify-content:space-between; gap:8px; max-width:1160px; margin:22px auto 6px; padding:8px 14px; }
+    .brand{ display:flex; align-items:center; gap:10px; font-weight:800; letter-spacing:-0.5px; color:var(--brand); }
+    .brand-logo{ width:34px; height:34px; border-radius:12px; background:linear-gradient(135deg,var(--accent),var(--accent-2)); box-shadow:0 6px 18px #67e6ff44; display:grid; place-items:center; color:white; font-size:18px; }
+    .theme-toggle{ border:1px solid var(--stroke); background:var(--card); color:var(--brand); border-radius:12px; padding:8px 12px; font-weight:700; cursor:pointer; box-shadow:var(--shadow); backdrop-filter:saturate(140%) blur(8px); }
+    .theme-toggle:hover{ transform:translateY(-1px); }
+
+    .main-title { text-align:center; font-size:2.1rem; font-weight:800; color:var(--brand); letter-spacing:-1px; margin:0 0 4px; text-shadow:0 3px 15px #d3e5fd33; }
+
+    .center-outer { min-height: 70vh; display:flex; align-items:center; justify-content:center; }
+    .form-card-anim-wrapper { width: 460px; min-width: 280px; max-width: 98vw; overflow: visible; position: relative; margin-top: 6px; min-height: 320px; }
+
+    .form-card { background: var(--card); -webkit-backdrop-filter:saturate(140%) blur(8px); backdrop-filter:saturate(140%) blur(8px); width: 100%; padding: 46px 34px 38px; border-radius: 26px; box-shadow: var(--shadow); transition: box-shadow .18s; position: absolute; left: 0; top: 0; animation: fadeIn .45s; }
+
     .form-card.slide-in-left { animation: slideInLeft .45s cubic-bezier(.75,0,.27,1);} 
     .form-card.slide-in-right { animation: slideInRight .45s cubic-bezier(.75,0,.27,1);} 
     .form-card.slide-out-left { animation: slideOutLeft .42s cubic-bezier(.85,0,.14,1);} 
     .form-card.slide-out-right { animation: slideOutRight .42s cubic-bezier(.85,0,.14,1);} 
-    @keyframes slideInLeft {
-      from { opacity: 0; transform: translateX(-120px);} 
-      to   { opacity: 1; transform: none;} 
-    }
-    @keyframes slideInRight {
-      from { opacity: 0; transform: translateX(120px);} 
-      to   { opacity: 1; transform: none;} 
-    }
-    @keyframes slideOutLeft {
-      from { opacity: 1; transform: none;} 
-      to   { opacity: 0; transform: translateX(-120px);} 
-    }
-    @keyframes slideOutRight {
-      from { opacity: 1; transform: none;} 
-      to   { opacity: 0; transform: translateX(120px);} 
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px);} 
-      to { opacity: 1; transform: none;} 
-    }
-    .progress-bar { position: absolute; top: 0; left: 0; width: 100%; height: 5px; border-radius: 4px 4px 0 0; background: #e6f1fd; overflow: hidden; }
-    .progress-bar-inner { background: linear-gradient(90deg,#42a6ff 10%, #77e3b0 100%); height: 100%; width: 0%; transition: width .45s cubic-bezier(.65,0,.35,1); }
-    .step-emoji { font-size: 30px; margin-bottom: 12px; display: block; animation: bounce .6s; }
-    @keyframes bounce { 0% { transform: scale(0.7);} 70% { transform: scale(1.15);} 100% { transform: scale(1);} }
-    .step-title { font-size: 21px; font-weight: 700; color: #284d85; margin-bottom: 18px; letter-spacing: -1px; }
-    .options label { display: flex; align-items: center; font-size: 17px; padding: 13px 12px; border-radius: 16px; border: 1.5px solid #e3eefa; margin-bottom: 16px; cursor: pointer; background: #f6fbff; transition: border .23s, background .18s; }
+    @keyframes slideInLeft { from { opacity: 0; transform: translateX(-120px);} to{opacity:1; transform:none;} }
+    @keyframes slideInRight{ from { opacity: 0; transform: translateX(120px);} to{opacity:1; transform:none;} }
+    @keyframes slideOutLeft { from { opacity: 1; transform: none;} to{opacity:0; transform: translateX(-120px);} }
+    @keyframes slideOutRight{ from { opacity: 1; transform: none;} to{opacity:0; transform: translateX(120px);} }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(20px);} to { opacity: 1; transform: none;} }
+
+    .progress-bar { position:absolute; top:0; left:0; width:100%; height:7px; border-radius: 4px 4px 0 0; background: #e6f1fd40; overflow:hidden; }
+    .progress-bar-inner { background: linear-gradient(90deg,var(--accent) 10%, var(--accent-2) 100%); height:100%; width:0%; transition: width .45s cubic-bezier(.65,0,.35,1); }
+    .progress-meta{ position:absolute; top:-26px; right:8px; font-size:12px; color:var(--ink-soft); }
+
+    .step-emoji { font-size: 36px; margin-bottom: 10px; display:block; filter: drop-shadow(0 10px 18px #7fe9ff40); }
+    .step-title { font-size: 21px; font-weight: 800; color: var(--brand); margin-bottom: 16px; letter-spacing: -0.7px; }
+
+    .options label { display:flex; align-items:center; gap:10px; font-size: 16px; padding: 13px 12px; border-radius:16px; border:1.5px solid var(--stroke); margin-bottom: 12px; cursor: pointer; background:#f6fbff55; transition:border .23s, background .18s, transform .15s; }
+    .options label:hover{ transform: translateY(-1px); }
     .options input[type="radio"]:checked + span,
-    .options label:has(input[type="radio"]:checked) { background: #e3f4ff; border: 1.5px solid #6bd1c5; color: #249e90; font-weight: 700; }
-    .options input[type="radio"] { accent-color: #4ab9ce; margin-right: 16px; width: 22px; height: 22px; }
-    .options select, .options input[type="text"] { font-size: 16px; padding: 11px 12px; border-radius: 12px; border: 1.5px solid #c5d5ee; width: 100%; background: #f6fbff; margin-bottom: 8px; margin-top: 7px; }
-    .step-tip { font-size: 14px; color: #4ab9ce; margin-bottom: 18px; background: #e7f5fd; border-radius: 10px; padding: 8px 12px; font-weight: 500; }
-    .form-btn-row { display: flex; justify-content: flex-end; gap: 14px; margin-top: 25px; }
-    .next-btn, .prev-btn { font-family: inherit; font-size: 16px; font-weight: 600; border: none; border-radius: 16px; padding: 11px 34px; transition: all .21s; box-shadow: 0 1px 3px #99c7ff18; margin: 0; cursor: pointer; }
-    .next-btn { background: linear-gradient(90deg,#4fbeff 30%,#6be3c0 100%); color: #fff; box-shadow: 0 5px 15px #85e4ff1c; }
+    .options label:has(input[type="radio"]:checked) { background:#e3f4ff77; border:1.5px solid var(--accent-2); color:#128b6d; font-weight:700; }
+    .options input[type="radio"] { accent-color: var(--accent); width: 22px; height: 22px; }
+    .options select, .options input[type="text"] { font-size: 16px; padding: 12px; border-radius: 12px; border:1.5px solid #c5d5ee; width: 100%; background: #f6fbff88; margin-bottom: 8px; margin-top: 7px; }
+
+    .step-tip { font-size: 13px; color: var(--brand); margin-bottom: 18px; background: #e7f5fd77; border-radius: 10px; padding: 8px 12px; font-weight: 600; }
+
+    .form-btn-row { display:flex; justify-content:space-between; gap:14px; margin-top: 22px; align-items:center; }
+    .step-count{ font-size:12px; color:var(--ink-soft); }
+    .next-btn, .prev-btn { font-family: inherit; font-size: 16px; font-weight: 700; border: none; border-radius: 16px; padding: 11px 22px; transition: all .21s; box-shadow: 0 1px 3px #99c7ff18; cursor: pointer; }
+    .next-btn { background: linear-gradient(90deg,var(--accent) 30%,var(--accent-2) 100%); color: #fff; box-shadow: 0 5px 15px #85e4ff1c; }
     .next-btn[disabled] { background: #e2eefd; color: #a6b8ca; cursor: not-allowed; }
-    .next-btn:not([disabled]):hover { box-shadow: 0 2px 16px #a5e9ff55; transform: scale(1.04);} 
-    .prev-btn { background: #f6fbff; color: #4389c7;} 
-    .prev-btn:hover { background: #e6f1fd;} 
-    /* Pipeline Kanban */
-    .pipeline-wrapper { width: 98vw; max-width: 1160px; margin: 30px auto 0 auto; display: flex; flex-direction: column; align-items: center; }
-    .pipeline-board { width: 100%; display: flex; gap: 18px; justify-content: center; margin-bottom: 24px; flex-wrap: wrap; }
-    .pipeline-col { border-radius: 20px 20px 16px 16px; min-width: 180px; max-width: 240px; flex: 1 1 200px; box-shadow: 0 2px 13px #aecbed14; padding: 0 0 18px 0; display: flex; flex-direction: column; align-items: center; border-top: 7px solid #4fbeff; position: relative; background: #f5faff; margin-bottom: 8px; }
-    .col-ia { background: #eafff7 !important; border-top: 7px solid #32c4b0 !important;}
-    .col-humano { background: #f5faff !important; border-top: 7px solid #7085f5 !important;}
-    .pipeline-col .col-title { font-size: 1.09rem; font-weight: bold; color: #234366; margin: 0; padding: 19px 12px 13px 12px; text-align: center; min-height: 54px; display: flex; align-items: center; justify-content: center; gap: 9px; }
-    .col-ia .col-title { color: #128b6d;}
-    .col-humano .col-title { color: #3459aa;}
-    .kanban-cards { width: 93%; min-height: 32px;}
-    .kanban-card { background: #fff; border-radius: 12px; margin: 7px 0 7px 0; padding: 14px 14px 12px 16px; font-size: 15px; color: #0b2b45; font-weight: 600; box-shadow: 0 2px 8px #b7e6ff16; position: relative; display: flex; flex-direction: column; animation: fadeIn .32s; }
-    .kanban-card.ia .card-label { color: #43bbaa; font-size: 12px; font-weight: bold;}
-    .kanban-card.humano .card-label { color: #7b86e2; font-size: 12px; font-weight: bold;}
-    .kanban-card.usernote .card-label { color: #bf950f; font-size: 12px;}
-    .kanban-card .card-delete, .del-note-btn { position: absolute; top: 5px; right: 10px; background: none; border: none; color: #b8b8b8; font-size: 19px; cursor: pointer; line-height: 1; opacity: 0.45; transition: opacity .15s; }
-    .kanban-card .card-delete:hover, .del-note-btn:hover { opacity: 0.9;}
-    .kanban-add-btn, .add-note-btn { margin-top: 12px; width: 100%; min-height: 48px; border: 2px dashed #cbe0f7; border-radius: 13px; background: #f8fcff; color: #5aa4de; font-size: 2rem; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: border .19s, color .18s; }
-    .kanban-add-btn:hover, .add-note-btn:hover { border-color: #4fbeff; color: #1a8dcb;}
-    .pipeline-actions { width: 100%; text-align: right; margin-top: 15px; display: flex; gap: 12px; justify-content: flex-end; }
-    .pdf-btn, .restart-btn { background: linear-gradient(90deg,#4fbeff 40%,#6be3c0 100%); color: #fff; border: none; border-radius: 14px; padding: 11px 22px; font-size: 1.09rem; font-family: inherit; font-weight: 700; cursor: pointer; transition: filter .19s; box-shadow: 0 2px 12px #b6eaff29; }
-    .restart-btn { background: #eaf7fa; color: #227f93; border: 1.2px solid #b3e5fc;}
-    .pdf-btn:hover, .restart-btn:hover { filter: brightness(1.09);} 
-    .pipeline-objetivo { margin-bottom: 15px; color: #204663; font-size: 1.11rem;}
+    .next-btn:not([disabled]):hover { box-shadow: 0 2px 16px #a5e9ff55; transform: translateY(-1px);} 
+    .prev-btn { background: var(--card); color: var(--brand); border: 1.2px solid var(--stroke);} 
+    .prev-btn:hover { background: #e6f1fd55; }
+
+    /* Pipeline */
+    .pipeline-wrapper { width: 98vw; max-width: 1160px; margin: 10px auto 0; display:flex; flex-direction:column; align-items:center; }
+    .pipeline-board { width: 100%; display:flex; gap:18px; justify-content:center; margin: 10px 0 22px; flex-wrap: wrap; }
+    .pipeline-col { border-radius: 18px; min-width: 200px; max-width: 260px; flex:1 1 220px; box-shadow: var(--shadow); padding: 0 0 18px; display:flex; flex-direction:column; align-items:center; border-top: 8px solid var(--accent); position: relative; background: var(--card); -webkit-backdrop-filter:saturate(140%) blur(6px); backdrop-filter:saturate(140%) blur(6px); }
+    .col-ia { border-top-color:#32c4b0 !important; }
+    .col-humano { border-top-color:#7085f5 !important; }
+    .pipeline-col .col-title { width:100%; background: linear-gradient(180deg,#ffffffbb,transparent); border-radius: 18px 18px 0 0; font-size: 1.03rem; font-weight: 800; color: var(--brand); padding: 16px 12px 10px; text-align: center; min-height: 54px; display:flex; align-items:center; justify-content:center; gap: 9px; position: sticky; top: 0; }
+    .col-ia .col-title { color: #128b6d; }
+    .col-humano .col-title { color: #3459aa; }
+
+    .kanban-cards { width: 93%; min-height: 32px; }
+    .kanban-card { background: #fff; border-radius: 14px; margin: 8px 0; padding: 12px 12px 12px 14px; font-size: 14.5px; color: var(--ink); font-weight: 600; box-shadow: 0 2px 8px #b7e6ff16; position: relative; display: flex; flex-direction: column; animation: fadeIn .32s; border:1px solid #e9f2ff; transition:transform .15s,box-shadow .15s; }
+    .kanban-card:hover{ transform: translateY(-1px); box-shadow: 0 6px 18px #b7e6ff2a; }
+    .kanban-card .card-label { align-self:flex-start; border-radius: 999px; padding: 3px 8px; margin-bottom:6px; font-size: 11px; font-weight: 800; letter-spacing: .3px; }
+    .kanban-card.ia .card-label { background:#e9fffa; color:#008f7a; border:1px solid #bff2e9; }
+    .kanban-card.humano .card-label { background:#eef1ff; color:#4c5be6; border:1px solid #d8ddff; }
+    .kanban-card.usernote .card-label { background:#fff8e6; color:#bf950f; border:1px solid #ffe6a8; }
+    .kanban-card .card-delete, .del-note-btn { position: absolute; top: 8px; right: 10px; background: none; border: none; color: #9aa6bf; font-size: 18px; cursor: pointer; line-height: 1; opacity: 0.55; transition: opacity .15s; }
+    .kanban-card .card-delete:hover, .del-note-btn:hover { opacity: 0.95; }
+
+    .kanban-add-btn, .add-note-btn { margin-top: 10px; width: 94%; min-height: 46px; border: 2px dashed var(--stroke); border-radius: 12px; background: #f8fcff; color: #5aa4de; font-size: 1.6rem; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: border .19s, color .18s, transform .15s; }
+    .kanban-add-btn:hover, .add-note-btn:hover { border-color: var(--accent); color: var(--brand); transform: translateY(-1px); }
+
+    .pipeline-actions { width: 100%; text-align: right; margin-top: 6px; display: flex; gap: 12px; justify-content: flex-end; }
+    .pdf-btn, .restart-btn { background: linear-gradient(90deg,var(--accent) 40%,var(--accent-2) 100%); color: #fff; border: none; border-radius: 14px; padding: 11px 22px; font-size: 1.05rem; font-family: inherit; font-weight: 800; cursor: pointer; transition: filter .19s; box-shadow: 0 2px 12px #b6eaff29; }
+    .restart-btn { background: var(--card); color: var(--brand); border: 1.2px solid var(--stroke); }
+    .pdf-btn:hover, .restart-btn:hover { filter: brightness(1.07); }
+
+    .pipeline-objetivo { margin: 4px 0 12px; color: var(--ink-soft); font-size: 1.02rem; }
+
     .add-note-form { margin: 8px 0 0 0; width: 94%; }
-    .add-note-form textarea { width: 100%; border-radius: 8px; border: 1px solid #b1d7d2; font-size: 14px; padding: 6px 8px;}
-    .add-note-form button { margin-top: 6px; padding: 4px 18px; border: none; border-radius: 8px; background: #43bbaa; color: #fff; font-weight: bold; cursor: pointer;}
-    @media (max-width: 800px) { .pipeline-board { flex-direction: column; gap: 13px;} .pipeline-col { max-width: 98vw;} }
-    @media (max-width: 600px) { .form-card-anim-wrapper { width: 99vw; } .form-card { padding: 20px 7px 16px 7px; min-width: unset;} .step-title { font-size: 17px;} .options label { font-size: 15px; } }
+    .add-note-form textarea { width: 100%; border-radius: 10px; border: 1px solid #b1d7d2; font-size: 14px; padding: 8px 10px; background:#ffffffcc; }
+    .add-note-form button { margin-top: 6px; padding: 6px 18px; border: none; border-radius: 9px; background: #43bbaa; color: #fff; font-weight: 800; cursor: pointer; }
+
+    @media (max-width: 980px){ .pipeline-board{ flex-wrap: nowrap; overflow-x:auto; scroll-snap-type:x mandatory; padding-bottom:6px; } .pipeline-col{ flex:0 0 80%; scroll-snap-align:start; } }
+    @media (max-width: 600px) { .form-card-anim-wrapper { width: 99vw; } .form-card { padding: 26px 12px 18px; } .step-title { font-size: 18px; } .options label { font-size: 15px; } }
   </style>
 </head>
 <body>
-<div class="main-title">Gerador de Pipeline de Vendas</div>
-<div class="center-outer" id="centerForm">
-  <div class="form-card-anim-wrapper" id="wizardWrapper"></div>
-</div>
-<div id="pipelineArea" style="display:none;"></div>
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-logo">⚡</div>
+      <div>
+        <div class="main-title">Gerador de Pipeline de Vendas</div>
+        <div style="font-size:12px;color:var(--ink-soft);margin-top:-2px;">crie, ajuste e exporte seu funil em minutos</div>
+      </div>
+    </div>
+    <button id="themeToggle" class="theme-toggle" aria-label="Alternar tema">🌙 Tema</button>
+  </header>
+
+  <div class="center-outer" id="centerForm">
+    <div class="form-card-anim-wrapper" id="wizardWrapper"></div>
+  </div>
+
+  <div id="pipelineArea" style="display:none;"></div>
 
 <script>
+  // ============ THEME ============
+  (function(){
+    const root=document.documentElement; const key='pipeline_theme';
+    const saved=localStorage.getItem(key); if(saved){root.setAttribute('data-theme', saved);} 
+    const toggle=document.getElementById('themeToggle');
+    const apply=()=>{ toggle.textContent= root.getAttribute('data-theme')==='dark' ? '☀️ Tema' : '🌙 Tema'; };
+    apply();
+    toggle.onclick=()=>{ const next = root.getAttribute('data-theme')==='dark'?'light':'dark'; root.setAttribute('data-theme',next); localStorage.setItem(key,next); apply(); };
+  })();
+
   let userAnswers = {};
 
   // Segmentos
@@ -142,11 +163,9 @@
     {val:"varejo",txt:"Varejo"}
   ];
 
-  // Emojis
   const icons = { ia: "🤖", humano: "🙋‍♂️" };
 
-  // ======== OVERRIDES existentes (opcionais) ========
-  // Mantém suas variações, mas agora serão "preenchidas" para ficarem completas
+  // Overrides existentes (mantidos)
   const pipelinesIAOverrides = {
     mediaGeral: [
       { nome: "Lead Novo", tipo: "ia", cards: ["Mensagem 1D: ‘Recebemos seu contato, obrigado!’","Mensagem 3D: ‘Podemos ajudar em algo?’","Transferir para humano se respondeu"]},
@@ -210,25 +229,17 @@
     ]
   };
 
-  // ======== Builder completo de pipelines ========
-  const iconsMap = { ia: "IA", humano: "Humano" };
-
-  function slug(s){
-    return (s||"").toLowerCase()
-      .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
-      .replace(/[^a-z0-9\s-]/g,'')
-      .replace(/\s+/g,'-');
-  }
+  // ======== Builder completo ========
+  function slug(s){ return (s||"").toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9\s-]/g,'').replace(/\s+/g,'-'); }
 
   function baseTemplateDefault(usarIA){
-    const ia = usarIA ? 'ia' : 'humano';
     return [
       { nome: usarIA?"Lead novo (captura automática)":"Lead novo", tipo: usarIA?"ia":"humano", cards: usarIA?["Mensagem 1D de boas-vindas","Mensagem 3D de apoio","Transferir se respondeu"]:["Registrar lead","Dar boas-vindas"] },
-      { nome: usarIA?"Qualificação (IA → Humano)":"Qualificação", tipo: ia, cards: usarIA?["Perguntas de qualificação","Marcar contato humano se apto"]:["BANT/GPCT","Priorizar"] },
+      { nome: usarIA?"Qualificação (IA → Humano)":"Qualificação", tipo: usarIA?"ia":"humano", cards: usarIA?["Perguntas de qualificação","Marcar contato humano se apto"]:["BANT/GPCT","Priorizar"] },
       { nome: "Descoberta/Diagnóstico", tipo: "humano", cards: ["Entender dor/necessidade","Mapear decisores"] },
       { nome: "Apresentação/Demo", tipo: "humano", cards: ["Apresentar solução","Validar encaixe"] },
       { nome: "Proposta", tipo: "humano", cards: ["Enviar proposta","Prazo e condições"] },
-      { nome: usarIA?"Follow-up Automático":"Follow-up", tipo: usarIA?"ia":"humano", cards: usarIA?["Lembretes 2D/5D","Reengajamento"]:["Follow-ups periódicos"] },
+      { nome: usarIA?"Follow-up Automático":"Follow-up", tipo: usarIA?"ia":"humano", cards: usarIA?[ "Lembretes 2D/5D","Reengajamento" ]:[ "Follow-ups periódicos" ] },
       { nome: "Negociação", tipo: "humano", cards: ["Ajustes comerciais","Aprovação interna"] },
       { nome: "Fechado – Ganho", tipo: "humano", cards: ["Contrato assinado"] },
       { nome: "Fechado – Perdido", tipo: "humano", cards: ["Registrar motivo"] },
@@ -237,12 +248,11 @@
   }
 
   function baseTemplateBySegment(segmento, usarIA){
-    const ia = usarIA ? 'ia' : 'humano';
     switch(segmento){
       case 'ecommerce':
         return [
           { nome: usarIA?"Lead/Visitante (captura)":"Lead/Visitante", tipo: usarIA?"ia":"humano", cards: usarIA?["Mensagem de boas-vindas","Pergunta de interesse"]:["Capturar email/whats"] },
-          { nome: "Engajamento", tipo: ia, cards: ["Ofertas/Newsletter","Dúvidas rápidas"] },
+          { nome: "Engajamento", tipo: usarIA?"ia":"humano", cards: ["Ofertas/Newsletter","Dúvidas rápidas"] },
           { nome: "Adição ao Carrinho", tipo: "humano", cards: ["Suporte à compra"] },
           { nome: usarIA?"Carrinho Abandonado (IA)":"Recuperação de Carrinho", tipo: usarIA?"ia":"humano", cards: usarIA?["Lembrete 1H","Cupom 24H"]:["Contato manual"] },
           { nome: "Checkout/Pagamento", tipo: "humano", cards: ["Confirmação de pagamento"] },
@@ -252,13 +262,13 @@
         ];
       case 'educacao':
         return [
-          { nome: usarIA?"Lead novo (IA)":"Lead novo", tipo: usarIA?"ia":"humano", cards: usarIA?["Perguntar curso de interesse","Agendar contato"]:["Registrar interesse"] },
+          { nome: usarIA?"Lead novo (IA)":"Lead novo", tipo: usarIA?"ia":"humano", cards: usarIA?["Curso de interesse","Agendar contato"]:["Registrar interesse"] },
           { nome: usarIA?"Pré-qualificação (IA → Humano)":"Pré-qualificação", tipo: usarIA?"ia":"humano", cards: ["Perfil do aluno","Disponibilidade"] },
           { nome: "Aula/Prova Diagnóstica", tipo: "humano", cards: ["Agendar e realizar"] },
-          { nome: "Proposta/Mensalidades", tipo: "humano", cards: ["Apresentar planos","Bolsas/Descontos"] },
+          { nome: "Proposta/Mensalidades", tipo: "humano", cards: ["Planos e bolsas"] },
           { nome: usarIA?"Follow-up Automático":"Follow-up", tipo: usarIA?"ia":"humano", cards: ["Lembretes de matrícula"] },
-          { nome: "Matrícula", tipo: "humano", cards: ["Documentos","Contrato"] },
-          { nome: "Fechado – Perdido", tipo: "humano", cards: ["Sem interesse no momento"] },
+          { nome: "Matrícula", tipo: "humano", cards: ["Documentos/Contrato"] },
+          { nome: "Fechado – Perdido", tipo: "humano", cards: ["Sem interesse"] },
           { nome: "Pós-matrícula", tipo: "humano", cards: ["Boas-vindas","Acompanhamento inicial"] }
         ];
       case 'imobiliarias':
@@ -268,13 +278,13 @@
           { nome: "Visita Agendada", tipo: "humano", cards: ["Confirmar dia/horário"] },
           { nome: "Proposta/Intent", tipo: "humano", cards: ["Enviar proposta","Sinal"] },
           { nome: "Negociação", tipo: "humano", cards: ["Condições/financiamento"] },
-          { nome: "Fechado – Ganho", tipo: "humano", cards: ["Contrato de compra/locação"] },
-          { nome: "Fechado – Perdido", tipo: "humano", cards: ["Motivo: preço/local" ] },
+          { nome: "Fechado – Ganho", tipo: "humano", cards: ["Contrato"] },
+          { nome: "Fechado – Perdido", tipo: "humano", cards: ["Motivo"] },
           { nome: "Pós-venda", tipo: "humano", cards: ["Entrega de chaves","Checklist"] }
         ];
       case 'saude':
         return [
-          { nome: usarIA?"Lead novo (IA)":"Lead novo", tipo: usarIA?"ia":"humano", cards: usarIA?["Especialidade de interesse","Sintoma principal"]:["Registrar contato"] },
+          { nome: usarIA?"Lead novo (IA)":"Lead novo", tipo: usarIA?"ia":"humano", cards: usarIA?["Especialidade","Sintoma"]:["Registrar contato"] },
           { nome: "Triagem", tipo: usarIA?"ia":"humano", cards: ["Elegibilidade","Urgência"] },
           { nome: "Avaliação/Consulta", tipo: "humano", cards: ["Agendar e realizar"] },
           { nome: "Proposta de Tratamento", tipo: "humano", cards: ["Plano e orçamento"] },
@@ -398,12 +408,6 @@
           { nome: "Fechado – Perdido", tipo: "humano", cards: ["Sem resposta"] },
           { nome: "Pós-venda/Atendimento", tipo: "humano", cards: ["Boas-vindas"] }
         ];
-      case 'turismo': // já tratado acima
-      case 'servicos':
-      case 'varejo':
-      case 'agencia':
-      case 'consultorias':
-      case 'mediaGeral':
       default:
         return baseTemplateDefault(usarIA);
     }
@@ -415,16 +419,13 @@
     const namesInOverride = new Set(result.map(s=>slug(s.nome)));
     base.forEach(b=>{ if(!namesInOverride.has(slug(b.nome))) result.push({ ...b }); });
 
-    // Garantir colunas essenciais (se ainda faltarem)
-    const mustHave = ["Fechado – Ganho","Fechado – Perdido","Onboarding/Pós-venda","Pós-venda","Onboarding","Pós-viagem","Pós-procedimento","Pós-matrícula"]; // ao menos uma de pós
     const haveSlugs = new Set(result.map(s=>slug(s.nome)));
     if(!haveSlugs.has(slug("Fechado – Ganho"))) result.push({ nome:"Fechado – Ganho", tipo:"humano", cards:["Concluído com sucesso"] });
     if(!haveSlugs.has(slug("Fechado – Perdido"))) result.push({ nome:"Fechado – Perdido", tipo:"humano", cards:["Registrar motivo"] });
-    // Pós-venda genérico se não houver nenhuma variação
+
     const posOptions = ["Onboarding/Pós-venda","Pós-venda","Onboarding","Pós-viagem","Pós-procedimento","Pós-matrícula","Execução/Pós","Entrega/Instalação","Onboarding/Ativação"]; 
     const hasPos = result.some(s=>posOptions.map(slug).includes(slug(s.nome)));
     if(!hasPos) result.push({ nome:"Onboarding/Pós-venda", tipo:"humano", cards:["Kickoff","NPS inicial"] });
-
     return result;
   }
 
@@ -434,7 +435,7 @@
     return mergeAndComplete(base, override);
   }
 
-  // Notas customizadas (por coluna e segmento)
+  // Notas customizadas
   let notasAdicionais = {};
 
   // Wizard Steps
@@ -499,8 +500,7 @@
     </div>`, tip: "Defina um objetivo claro. O pipeline te ajuda a chegar lá!", validate: ()=>document.getElementById('objetivo').value.trim().length > 0 }
   ];
 
-  let currentStep = 0;
-  let lastDirection = null;
+  let currentStep = 0; let lastDirection = null;
   const wrapper = document.getElementById('wizardWrapper');
   const centerForm = document.getElementById('centerForm');
   const pipelineArea = document.getElementById('pipelineArea');
@@ -508,101 +508,65 @@
   function renderStep(n, direction='next') {
     const step = steps[n];
     let card = wrapper.querySelector('.form-card');
-    if(card) {
-      card.classList.add(direction === 'next' ? 'slide-out-left' : 'slide-out-right');
-      setTimeout(()=>card.remove(), 410);
-    }
+    if(card) { card.classList.add(direction === 'next' ? 'slide-out-left' : 'slide-out-right'); setTimeout(()=>card.remove(), 410); }
+
     let newCard = document.createElement('form');
     newCard.className = 'form-card ' + (direction === 'next' ? 'slide-in-right' : 'slide-in-left');
     newCard.innerHTML = `
       <div class="progress-bar"><div class="progress-bar-inner" id="progress"></div></div>
+      <div class="progress-meta" id="progressMeta">Passo ${n+1} de ${steps.length}</div>
       <span class="step-emoji">${step.emoji}</span>
       <div class="step-title">${step.title}</div>
       ${step.html}
       <div class="step-tip">${step.tip}</div>
       <div class="form-btn-row">
-        ${n > 0 ? `<button type="button" class="prev-btn">Voltar</button>` : ""}
-        <button type="button" class="next-btn" id="nextBtn" disabled>${n < steps.length-1 ? "Próxima" : "Finalizar"}</button>
+        ${n > 0 ? `<button type="button" class="prev-btn">← Voltar</button>` : "<span class='step-count'></span>"}
+        <button type="button" class="next-btn" id="nextBtn" disabled>${n < steps.length-1 ? "Continuar →" : "Finalizar ✅"}</button>
       </div>
     `;
     wrapper.appendChild(newCard);
 
     newCard.querySelector('#progress').style.width = (n/(steps.length-1)*100) + '%';
 
-    // Habilita Próxima se validar
     const enableNext = ()=>{ newCard.querySelector('.next-btn').disabled = !step.validate(); };
-    newCard.querySelectorAll('select, input[type="radio"], input[type="text"]').forEach(el=>{
-      el.addEventListener('input', enableNext);
-      el.addEventListener('change', enableNext);
-    });
-    // checa uma vez ao montar
+    newCard.querySelectorAll('select, input[type="radio"], input[type="text"]').forEach(el=>{ el.addEventListener('input', enableNext); el.addEventListener('change', enableNext); });
     enableNext();
 
-    if(newCard.querySelector('.prev-btn')) {
-      newCard.querySelector('.prev-btn').onclick = ()=>{
-        lastDirection = 'prev';
-        currentStep--;
-        renderStep(currentStep, 'prev');
-      }
-    }
+    if(newCard.querySelector('.prev-btn')) newCard.querySelector('.prev-btn').onclick = ()=>{ lastDirection = 'prev'; currentStep--; renderStep(currentStep, 'prev'); }
 
     newCard.querySelector('.next-btn').onclick = ()=>{
       if(step.validate()) {
-        // Salva resposta do passo atual
         switch(currentStep) {
           case 0: userAnswers.segmento = document.getElementById('segmento').value; break;
           case 1: userAnswers.usarIA = document.querySelector('input[name="usarIA"]:checked')?.value; break;
           case 2: userAnswers.produto = document.getElementById('produto').value.trim(); break;
           case 3: userAnswers.tipoCliente = document.querySelector('input[name="tipoCliente"]:checked')?.value; break;
-          case 4:
-            userAnswers.captaLead = Array.from(document.querySelectorAll('input[name="captaLead"]:checked')).map(el=>el.value);
-            userAnswers.captaOutro = document.getElementById('captaOutro').value.trim();
-            break;
-          case 5:
-            let desafioEl = document.querySelector('input[name="desafio"]:checked');
-            userAnswers.desafio = desafioEl ? desafioEl.value : "";
-            userAnswers.desafioOutro = document.getElementById('desafioOutro').value.trim();
-            break;
+          case 4: userAnswers.captaLead = Array.from(document.querySelectorAll('input[name="captaLead"]:checked')).map(el=>el.value); userAnswers.captaOutro = document.getElementById('captaOutro').value.trim(); break;
+          case 5: let dEl = document.querySelector('input[name="desafio"]:checked'); userAnswers.desafio = dEl ? dEl.value : ""; userAnswers.desafioOutro = document.getElementById('desafioOutro').value.trim(); break;
           case 6: userAnswers.ciclo = document.querySelector('input[name="ciclo"]:checked')?.value; break;
           case 7: userAnswers.usaBot = document.querySelector('input[name="usaBot"]:checked')?.value; break;
-          case 8:
-            let sucessoEl = document.querySelector('input[name="sucesso"]:checked');
-            userAnswers.sucesso = sucessoEl ? sucessoEl.value : "";
-            userAnswers.sucessoOutro = document.getElementById('sucessoOutro').value.trim();
-            break;
+          case 8: let sEl = document.querySelector('input[name="sucesso"]:checked'); userAnswers.sucesso = sEl ? sEl.value : ""; userAnswers.sucessoOutro = document.getElementById('sucessoOutro').value.trim(); break;
           case 9: userAnswers.objetivo = document.getElementById('objetivo').value.trim(); break;
         }
-
-        if(currentStep < steps.length-1) {
-          lastDirection = 'next';
-          currentStep++;
-          renderStep(currentStep, 'next');
-        } else {
-          mostrarPipelineFinal();
-        }
+        if(currentStep < steps.length-1) { lastDirection = 'next'; currentStep++; renderStep(currentStep, 'next'); }
+        else { mostrarPipelineFinal(); }
       }
     };
   }
 
   renderStep(0, 'next');
 
-  // ======== Mostrar Pipeline (completo) ========
+  // ======== Mostrar Pipeline ========
   function mostrarPipelineFinal() {
-    centerForm.style.display = "none";
-    pipelineArea.style.display = "block";
-    pipelineArea.innerHTML = ""; // limpar
+    centerForm.style.display = "none"; pipelineArea.style.display = "block"; pipelineArea.innerHTML = "";
 
     const segmento = userAnswers.segmento;
     const usarIA = userAnswers.usarIA === "sim";
     const objetivo = userAnswers.objetivo;
 
-    // Constrói pipeline completo (com base + overrides + garantia de etapas finais)
     let pipeline = buildPipeline(segmento, usarIA);
-    if(!pipeline || pipeline.length === 0){
-      pipeline = baseTemplateDefault(usarIA);
-    }
+    if(!pipeline || pipeline.length === 0){ pipeline = baseTemplateDefault(usarIA); }
 
-    // Wrapper do pipeline
     const pipelineWrap = document.createElement('div');
     pipelineWrap.className = 'pipeline-wrapper';
     pipelineWrap.id = "pipelineContent";
@@ -611,47 +575,34 @@
     let capta = '-';
     if (userAnswers.captaLead && userAnswers.captaLead.length > 0) {
       capta = userAnswers.captaLead.filter(item => item !== 'Outro').join(', ');
-      if (userAnswers.captaLead.includes('Outro') && userAnswers.captaOutro) {
-        capta = capta ? `${capta}, ${userAnswers.captaOutro}` : userAnswers.captaOutro;
-      }
+      if (userAnswers.captaLead.includes('Outro') && userAnswers.captaOutro) { capta = capta ? `${capta}, ${userAnswers.captaOutro}` : userAnswers.captaOutro; }
     } else if (userAnswers.captaOutro) { capta = userAnswers.captaOutro; }
 
-    let desafio = '-';
-    if (userAnswers.desafio) {
-      desafio = userAnswers.desafio === 'Outro' ? (userAnswers.desafioOutro || 'Outro') : userAnswers.desafio;
-    }
+    const desafio = userAnswers.desafio ? (userAnswers.desafio === 'Outro' ? (userAnswers.desafioOutro || 'Outro') : userAnswers.desafio) : '-';
+    const sucesso = userAnswers.sucesso ? (userAnswers.sucesso === 'Outro' ? (userAnswers.sucessoOutro || 'Outro') : userAnswers.sucesso) : '-';
+    const tipoCliente = userAnswers.tipoCliente || '-'; const ciclo = userAnswers.ciclo || '-';
 
-    let sucesso = '-';
-    if (userAnswers.sucesso) {
-      sucesso = userAnswers.sucesso === 'Outro' ? (userAnswers.sucessoOutro || 'Outro') : userAnswers.sucesso;
-    }
-
-    let tipoCliente = userAnswers.tipoCliente || '-';
-    let ciclo = userAnswers.ciclo || '-';
-
-    let resumo = `
-      <div style="background:#f3f7fa;padding:18px 24px 8px 24px;border-radius:18px;margin-bottom:18px;">
-        <h3 style="color:#234366;margin:0 0 12px 0;font-size:1.1rem;">Resumo das Suas Respostas:</h3>
-        <ul style="list-style:none;padding:0;line-height:1.7;">
+    const resumo = `
+      <div style="background:var(--card);backdrop-filter:saturate(140%) blur(6px); padding:18px 24px 8px; border-radius:18px; margin-bottom:14px; box-shadow:var(--shadow); border:1px solid var(--stroke);">
+        <h3 style="color:var(--brand);margin:0 0 10px;font-size:1.06rem;">Resumo das Suas Respostas</h3>
+        <ul style="list-style:none;padding:0;line-height:1.7;margin:0;">
           <li><b>Segmento:</b> ${segmentos.find(s=>s.val===userAnswers.segmento)?.txt || '-'}</li>
           <li><b>Funil:</b> ${usarIA ? "Com IA" : "Tradicional"}</li>
           <li><b>Produto/Serviço:</b> ${userAnswers.produto || '-'}</li>
           <li><b>Tipo de Cliente:</b> ${tipoCliente}</li>
-          <li><b>Como você capta leads hoje:</b> ${capta}</li>
-          <li><b>Desafio atual:</b> ${desafio}</li>
-          <li><b>Ciclo de vendas:</b> ${ciclo}</li>
-          <li><b>Usa automação/chatbot?</b> ${userAnswers.usaBot || '-'}</li>
-          <li><b>O que seria sucesso pra você?</b> ${sucesso}</li>
-          <li><b>Objetivo principal:</b> ${userAnswers.objetivo||'-'}</li>
+          <li><b>Captação de leads:</b> ${capta}</li>
+          <li><b>Desafio:</b> ${desafio}</li>
+          <li><b>Ciclo:</b> ${ciclo}</li>
+          <li><b>Automação/chatbot:</b> ${userAnswers.usaBot || '-'}</li>
+          <li><b>Sucesso:</b> ${sucesso}</li>
+          <li><b>Objetivo:</b> ${userAnswers.objetivo||'-'}</li>
         </ul>
-      </div>
-    `;
+      </div>`;
 
     pipelineWrap.innerHTML = resumo + `<div class="pipeline-objetivo"><b>Objetivo principal:</b> ${objetivo}</div>`;
 
-    // Kanban board
-    const board = document.createElement('div');
-    board.className = 'pipeline-board';
+    // Board
+    const board = document.createElement('div'); board.className = 'pipeline-board';
 
     pipeline.forEach((col, idx) => {
       const key = segmento + "_" + idx + "_" + (usarIA ? "ia" : "trad");
@@ -678,47 +629,24 @@
             <textarea id="note_${key}" rows="2" placeholder="Digite uma nota para esta etapa..."></textarea><br>
             <button onclick="addNote('${key}');return false;">Adicionar</button>
           </div>
-        </div>
-      `;
+        </div>`;
     });
 
     pipelineWrap.appendChild(board);
 
-    // Ações: PDF e Refazer
-    const actions = document.createElement('div');
-    actions.className = "pipeline-actions";
-    actions.innerHTML = `
+    const actions = document.createElement('div'); actions.className = "pipeline-actions"; actions.innerHTML = `
       <button class="pdf-btn" id="pdfBtn">Gerar PDF</button>
-      <button class="restart-btn" id="restartBtn">Refazer Pipeline</button>
-    `;
+      <button class="restart-btn" id="restartBtn">Refazer Pipeline</button>`;
     pipelineWrap.appendChild(actions);
 
     pipelineArea.appendChild(pipelineWrap);
 
-    document.getElementById('restartBtn').onclick = ()=>{
-      pipelineArea.style.display = "none";
-      centerForm.style.display = "flex";
-      currentStep = 0;
-      renderStep(0,'next');
-    };
-
-    document.getElementById('pdfBtn').onclick = function() {
-      document.querySelector('.pipeline-actions').style.display = 'none';
-      window.print();
-      setTimeout(() => { document.querySelector('.pipeline-actions').style.display = ''; }, 500);
-    };
-
-    document.querySelectorAll('.add-note-btn').forEach(btn => {
-      btn.onclick = function() {
-        let key = this.getAttribute('data-key');
-        document.querySelectorAll('.add-note-form').forEach(f => f.style.display = 'none');
-        document.getElementById('form_' + key).style.display = 'block';
-        document.getElementById('note_' + key).focus();
-      }
-    });
+    document.getElementById('restartBtn').onclick = ()=>{ pipelineArea.style.display = "none"; centerForm.style.display = "flex"; currentStep = 0; renderStep(0,'next'); };
+    document.getElementById('pdfBtn').onclick = function() { document.querySelector('.pipeline-actions').style.display = 'none'; window.print(); setTimeout(() => { document.querySelector('.pipeline-actions').style.display = ''; }, 500); };
+    document.querySelectorAll('.add-note-btn').forEach(btn => { btn.onclick = function() { let key = this.getAttribute('data-key'); document.querySelectorAll('.add-note-form').forEach(f => f.style.display = 'none'); document.getElementById('form_' + key).style.display = 'block'; document.getElementById('note_' + key).focus(); } });
   }
 
-  // Adicionar nota personalizada
+  // notas personalizadas
   window.addNote = function(key) {
     const textarea = document.getElementById('note_' + key);
     let nota = textarea.value.trim();
@@ -730,7 +658,6 @@
     mostrarPipelineFinal();
   }
 
-  // Apagar nota personalizada
   document.addEventListener('click', function(e){
     if (e.target.classList.contains('del-note-btn')) {
       let key = e.target.getAttribute('data-key');
